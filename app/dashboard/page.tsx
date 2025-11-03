@@ -1,5 +1,6 @@
 "use client"
 
+import { Suspense } from "react"
 import { Sidebar } from "@/components/layout/sidebar"
 import { Header } from "@/components/layout/header"
 import { DashboardKPIs } from "@/components/dashboard/kpis"
@@ -34,7 +35,9 @@ export default function DashboardPage() {
     <div className="flex min-h-screen bg-background">
       <Sidebar />
       <div className="flex-1 flex flex-col" style={{ marginLeft: "var(--app-sidebar-width, 256px)" }}>
-        <Header />
+        <Suspense fallback={null}>
+          <Header />
+        </Suspense>
         <main className="mt-16 flex-1 overflow-auto">
           <div className="px-6 py-6 space-y-6">
             <div>
