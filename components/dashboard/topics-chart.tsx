@@ -1,6 +1,6 @@
 "use client"
 
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from "recharts"
 
 interface TopicsChartProps {
   topics: Array<{ topic: string; count: number }>
@@ -21,15 +21,6 @@ export function TopicsChart({ topics }: TopicsChartProps) {
             height={80}
           />
           <YAxis tick={{ fontSize: 12, fill: "var(--ink-600)" }} />
-          <Tooltip
-            contentStyle={{
-              backgroundColor: "var(--surface)",
-              border: "1px solid var(--ink-100)",
-              borderRadius: "8px",
-              fontSize: "12px",
-            }}
-            cursor={{ fill: "rgba(0,0,0,0.05)" }}
-          />
           <Bar dataKey="count" fill="var(--brand-500)" radius={[8, 8, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>

@@ -3,15 +3,19 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Slider } from "@/components/ui/slider"
-import { Checkbox } from "@/components/ui/checkbox"
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 interface FiltersToolbarProps {
   onFiltersChange: (filters: {
     type: string
     topics: string[]
-    stance: string
-    confidence: number
   }) => void
 }
 
@@ -20,23 +24,16 @@ const topics = ["Healthcare", "Immigration", "Education", "Infrastructure", "Env
 export function FiltersToolbar({ onFiltersChange }: FiltersToolbarProps) {
   const [type, setType] = useState("both")
   const [selectedTopics, setSelectedTopics] = useState<string[]>([])
-  const [stance, setStance] = useState("all")
-  const [confidence, setConfidence] = useState(0.5)
 
-  const handleTopicToggle = (topic: string) => {
-    const updated = selectedTopics.includes(topic)
-      ? selectedTopics.filter((t) => t !== topic)
-      : [...selectedTopics, topic]
-    setSelectedTopics(updated)
-    onFiltersChange({ type, topics: updated, stance, confidence })
+  const handleTypeChange = (value: string) => {
+    setType(value)
+    onFiltersChange({ type: value, topics: selectedTopics })
   }
 
   const handleReset = () => {
     setType("both")
     setSelectedTopics([])
-    setStance("all")
-    setConfidence(0.5)
-    onFiltersChange({ type: "both", topics: [], stance: "all", confidence: 0.5 })
+    onFiltersChange({ type: "both", topics: [] })
   }
 
   return (
@@ -48,11 +45,11 @@ export function FiltersToolbar({ onFiltersChange }: FiltersToolbarProps) {
         </Button>
       </div>
 
-      <div className="grid grid-cols-5 gap-4">
+      <div className="grid grid-cols-2 gap-4">
         {/* Type filter */}
         <div className="space-y-2">
           <label className="text-xs font-medium text-ink-600">Type</label>
-          <Select value={type} onValueChange={setType}>
+          <Select value={type} onValueChange={handleTypeChange}>
             <SelectTrigger className="w-full">
               <SelectValue />
             </SelectTrigger>
@@ -67,50 +64,50 @@ export function FiltersToolbar({ onFiltersChange }: FiltersToolbarProps) {
         {/* Topic filter */}
         <div className="space-y-2">
           <label className="text-xs font-medium text-ink-600">Topic</label>
-          <div className="border border-border rounded-lg p-3 bg-surface max-h-48 overflow-y-auto space-y-2">
-            {topics.map((topic) => (
-              <label key={topic} className="flex items-center gap-2 cursor-pointer">
-                <Checkbox checked={selectedTopics.includes(topic)} onCheckedChange={() => handleTopicToggle(topic)} />
-                <span className="text-xs">{topic}</span>
-              </label>
-            ))}
-          </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button
+                className="flex h-9 w-full items-center justify-between rounded-lg border border-border bg-surface px-3 py-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-ring"
+              >
+                <span className="truncate text-left">
+                  {selectedTopics.length === 0 ? "All topics" : selectedTopics.join(", ")}
+                </span>
+                <span className="text-ink-500">▼</span>
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-64">
+              <DropdownMenuItem
+                onClick={() => {
+                  setSelectedTopics([])
+                  onFiltersChange({ type, topics: [] })
+                }}
+              >
+                All topics
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              {topics.map((topic) => {
+                const checked = selectedTopics.includes(topic)
+                return (
+                  <DropdownMenuCheckboxItem
+                    key={topic}
+                    checked={checked}
+                    onCheckedChange={() => {
+                      const updated = checked
+                        ? selectedTopics.filter((t) => t !== topic)
+                        : [...selectedTopics, topic]
+                      setSelectedTopics(updated)
+                      onFiltersChange({ type, topics: updated })
+                    }}
+                  >
+                    {topic}
+                  </DropdownMenuCheckboxItem>
+                )
+              })}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
 
-        {/* Stance filter */}
-        <div className="space-y-2">
-          <label className="text-xs font-medium text-ink-600">Stance</label>
-          <Select value={stance} onValueChange={setStance}>
-            <SelectTrigger className="w-full">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All</SelectItem>
-              <SelectItem value="support">Support</SelectItem>
-              <SelectItem value="oppose">Oppose</SelectItem>
-              <SelectItem value="neutral">Neutral</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
-        {/* Confidence filter */}
-        <div className="space-y-2">
-          <label className="text-xs font-medium text-ink-600">Confidence ≥</label>
-          <div className="pt-2">
-            <Slider
-              min={0.5}
-              max={0.95}
-              step={0.05}
-              value={[confidence]}
-              onValueChange={(val) => {
-                setConfidence(val[0])
-                onFiltersChange({ type, topics: selectedTopics, stance, confidence: val[0] })
-              }}
-              className="w-full"
-            />
-            <div className="text-xs text-ink-500 mt-1 text-center">{Math.round(confidence * 100)}%</div>
-          </div>
-        </div>
+        
       </div>
     </div>
   )

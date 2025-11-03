@@ -24,9 +24,9 @@ export function StanceTrendChart({ trend }: StanceTrendChartProps) {
             }}
           />
           <Legend wrapperStyle={{ fontSize: "12px" }} />
-          <Line type="monotone" dataKey="support" stroke="var(--ok)" strokeWidth={2} isAnimationActive={false} />
-          <Line type="monotone" dataKey="oppose" stroke="var(--danger)" strokeWidth={2} isAnimationActive={false} />
-          <Line type="monotone" dataKey="neutral" stroke="var(--ink-400)" strokeWidth={2} isAnimationActive={false} />
+          <Line type="monotone" dataKey="support" stroke="var(--chart-1)" strokeWidth={2} isAnimationActive={false} />
+          <Line type="monotone" dataKey="oppose" stroke="var(--chart-2)" strokeWidth={2} isAnimationActive={false} />
+          <Line type="monotone" dataKey="neutral" stroke="var(--chart-3)" strokeWidth={2} isAnimationActive={false} />
         </LineChart>
       </ResponsiveContainer>
     </div>

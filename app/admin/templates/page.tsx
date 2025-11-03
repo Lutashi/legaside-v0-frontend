@@ -6,7 +6,6 @@ import { Header } from "@/components/layout/header"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Badge } from "@/components/ui/badge"
 import type { TemplateRow } from "@/lib/types"
 import { formatDate } from "@/lib/utils"
 
@@ -59,20 +58,7 @@ export default function AdminTemplatesPage() {
     setEditingId(null)
   }
 
-  const stanceLabel = (stance: string) => {
-    switch (stance) {
-      case "SUPPORT":
-        return "Support"
-      case "OPPOSE":
-        return "Oppose"
-      case "NEUTRAL":
-        return "Neutral"
-      case "GENERIC":
-        return "Generic"
-      default:
-        return stance
-    }
-  }
+  
 
   return (
     <div className="flex min-h-screen bg-background">
@@ -82,7 +68,10 @@ export default function AdminTemplatesPage() {
         <main className="mt-16 flex-1 overflow-auto">
           <div className="px-6 py-6">
             <div className="flex items-center justify-between mb-6">
-              <h1 className="text-2xl font-semibold text-ink-900">Templates</h1>
+              <div>
+                <h1 className="text-2xl font-semibold text-ink-900">Templates</h1>
+                <p className="text-sm text-ink-500">Manage response templates</p>
+              </div>
               <Button variant="primary" size="md">
                 Add template
               </Button>
@@ -95,7 +84,6 @@ export default function AdminTemplatesPage() {
                   <TableHeader>
                     <TableRow hoverable={false}>
                       <TableHead>Topic</TableHead>
-                      <TableHead>Stance</TableHead>
                       <TableHead>Version</TableHead>
                       <TableHead>Updated</TableHead>
                       <TableHead>Actions</TableHead>
@@ -113,9 +101,6 @@ export default function AdminTemplatesPage() {
                         className="cursor-pointer"
                       >
                         <TableCell className="font-medium">{template.topic}</TableCell>
-                        <TableCell>
-                          <Badge variant="outline">{stanceLabel(template.stance)}</Badge>
-                        </TableCell>
                         <TableCell className="text-ink-600">v{template.version}</TableCell>
                         <TableCell className="text-xs text-ink-500">{formatDate(template.updatedAt)}</TableCell>
                         <TableCell>

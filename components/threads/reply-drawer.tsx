@@ -8,9 +8,9 @@ import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { ConfidenceChip } from "@/components/ui/confidence-chip"
 import { formatDate } from "@/lib/utils"
 import { X, Copy, Check } from "lucide-react"
+import { useToast } from "@/hooks/use-toast"
 
 interface ReplyDrawerProps {
   thread: ThreadRow
@@ -36,14 +36,9 @@ export function ReplyDrawer({ thread, onClose }: ReplyDrawerProps) {
   const [selectedTemplate, setSelectedTemplate] = useState("")
   const [copied, setCopied] = useState(false)
   const [markedSent, setMarkedSent] = useState(false)
+  const { toast } = useToast()
 
-  const stanceLabel = thread.stance
-    ? thread.stance === "SUPPORT"
-      ? "Support"
-      : thread.stance === "OPPOSE"
-        ? "Oppose"
-        : "Neutral"
-    : null
+  // Intentionally omit stance and confidence indicators from the modal header per design
 
   const templateOptions = templates[thread.topic as keyof typeof templates] || {
     SUPPORT: "Thank you for your message...",
@@ -60,6 +55,12 @@ export function ReplyDrawer({ thread, onClose }: ReplyDrawerProps) {
     await navigator.clipboard.writeText(draftText || selectedTemplate)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
+  }
+
+  const handleMarkReplied = () => {
+    setMarkedSent(true)
+    toast({ title: "Reply recorded", description: "A reply was marked and a thread was created." })
+    onClose()
   }
 
   const handleGenerate = () => {
@@ -100,7 +101,7 @@ export function ReplyDrawer({ thread, onClose }: ReplyDrawerProps) {
             </DrawerClose>
           </div>
 
-          {/* Badges row */}
+          {/* Badges row (stance and confidence removed) */}
           <div className="flex flex-wrap gap-2">
             <Badge variant="solid" className="bg-ink-100 text-ink-900">
               {thread.type === "CASEWORK" ? "Casework" : "Correspondence"}
@@ -108,8 +109,6 @@ export function ReplyDrawer({ thread, onClose }: ReplyDrawerProps) {
             <Badge variant="solid" className="bg-brand-100 text-brand-600">
               {thread.topic}
             </Badge>
-            {stanceLabel && <Badge variant="outline">{stanceLabel}</Badge>}
-            <ConfidenceChip confidence={thread.confidence} />
           </div>
         </DrawerHeader>
 
@@ -160,11 +159,7 @@ export function ReplyDrawer({ thread, onClose }: ReplyDrawerProps) {
                     <Textarea value={draftText} onChange={(e) => setDraftText(e.target.value)} className="min-h-32" />
                   </div>
 
-                  {needsReview && (
-                    <div className="p-3 rounded-lg bg-danger/10 border border-danger/30 text-sm text-danger">
-                      Needs review to send
-                    </div>
-                  )}
+                  {/* Needs review removed for now */}
 
                   {/* Citations panel */}
                   <div className="space-y-2">
@@ -213,11 +208,8 @@ export function ReplyDrawer({ thread, onClose }: ReplyDrawerProps) {
                 </>
               )}
             </Button>
-            <Button variant="secondary" size="md" disabled={needsReview}>
-              Mark sent
-            </Button>
-            <Button variant="ghost" size="md">
-              Needs review
+            <Button variant="secondary" size="md" onClick={handleMarkReplied}>
+              Mark replied
             </Button>
           </DrawerFooter>
         )}

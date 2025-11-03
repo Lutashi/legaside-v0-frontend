@@ -38,7 +38,10 @@ export default function AdminTopicsPage() {
         <main className="mt-16 flex-1 overflow-auto">
           <div className="px-6 py-6">
             <div className="flex items-center justify-between mb-6">
-              <h1 className="text-2xl font-semibold text-ink-900">Topics</h1>
+              <div>
+                <h1 className="text-2xl font-semibold text-ink-900">Topics</h1>
+                <p className="text-sm text-ink-500">Define and organize topics</p>
+              </div>
               <Button variant="primary" size="md">
                 Add topic
               </Button>

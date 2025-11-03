@@ -34,13 +34,13 @@ export function Sidebar() {
   const isActive = (href: string) => pathname === href || pathname.startsWith(href + "/")
 
   const menuItems = [
-    { href: "/threads", label: "Threads", icon: Mail },
-    { href: "/dashboard", label: "Dashboard", icon: LayoutGrid },
+    { href: "/threads", label: "Threads", icon: Mail, description: "Browse and triage conversations" },
+    { href: "/dashboard", label: "Dashboard", icon: LayoutGrid, description: "KPIs and trends at a glance" },
   ]
 
   const adminItems = [
-    { href: "/admin/topics", label: "Topics", icon: BookOpen },
-    { href: "/admin/templates", label: "Templates", icon: Settings },
+    { href: "/admin/topics", label: "Topics", icon: BookOpen, description: "Define and organize topics" },
+    { href: "/admin/templates", label: "Templates", icon: Settings, description: "Manage response templates" },
   ]
 
   return (
@@ -80,13 +80,20 @@ export function Sidebar() {
                     className={cn(
                       "flex items-center gap-3 rounded px-4 py-2.5 text-sm font-medium transition-all duration-200",
                       isActive(item.href)
-                        ? "bg-gradient-to-br from-brand-500/30 to-brand-500/20 text-brand-600 backdrop-blur-md border border-brand-500/40 shadow-lg"
+                        ? "bg-subtle text-ink-900 border border-border shadow-sm"
                         : "text-ink-600 hover:bg-subtle hover:text-ink-900",
                     )}
                     title={isCollapsed ? item.label : undefined}
                   >
                     <Icon className="w-4 h-4 flex-shrink-0" />
-                    {!isCollapsed && <span>{item.label}</span>}
+                    {!isCollapsed && (
+                      <div className="flex min-w-0 flex-col">
+                        <span className="truncate">{item.label}</span>
+                        {item.description && (
+                          <span className="text-xs text-ink-500 truncate">{item.description}</span>
+                        )}
+                      </div>
+                    )}
                   </Link>
                 )
               })}
@@ -99,19 +106,26 @@ export function Sidebar() {
                 {adminItems.map((item) => {
                   const Icon = item.icon
                   return (
-                    <Link
+                  <Link
                       key={item.href}
                       href={item.href}
                       className={cn(
                         "flex items-center gap-3 rounded px-4 py-2.5 text-sm font-medium transition-all duration-200",
                         isActive(item.href)
-                          ? "bg-gradient-to-br from-brand-500/30 to-brand-500/20 text-brand-600 backdrop-blur-md border border-brand-500/40 shadow-lg"
+                          ? "bg-subtle text-ink-900 border border-border shadow-sm"
                           : "text-ink-600 hover:bg-subtle hover:text-ink-900",
                       )}
                       title={isCollapsed ? item.label : undefined}
                     >
                       <Icon className="w-4 h-4 flex-shrink-0" />
-                      {!isCollapsed && <span>{item.label}</span>}
+                      {!isCollapsed && (
+                        <div className="flex min-w-0 flex-col">
+                          <span className="truncate">{item.label}</span>
+                          {item.description && (
+                            <span className="text-xs text-ink-500 truncate">{item.description}</span>
+                          )}
+                        </div>
+                      )}
                     </Link>
                   )
                 })}

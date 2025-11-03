@@ -30,7 +30,7 @@ const DrawerContent = React.forwardRef<
     <DrawerPrimitive.Content
       ref={ref}
       className={cn(
-        "fixed right-0 top-0 z-50 h-screen w-full max-w-[720px] overflow-y-auto",
+        "fixed right-0 top-0 z-50 h-screen w-full max-w-[720px] overflow-hidden",
         "border-l border-border bg-background shadow-2xl rounded-l-2xl",
         "animate-in slide-in-from-right-96 duration-300",
         className,
@@ -56,7 +56,7 @@ const DrawerHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDivEleme
 DrawerHeader.displayName = "DrawerHeader"
 
 const DrawerBody = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
-  <div className={cn("flex-1 overflow-y-auto px-6 py-5", className)} {...props} />
+  <div className={cn("flex-1 overflow-y-auto overflow-x-hidden px-6 py-5", className)} {...props} />
 )
 DrawerBody.displayName = "DrawerBody"
 

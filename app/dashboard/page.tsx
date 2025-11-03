@@ -39,6 +39,7 @@ export default function DashboardPage() {
           <div className="px-6 py-6 space-y-6">
             <div>
               <h1 className="text-2xl font-semibold text-ink-900">Dashboard</h1>
+              <p className="text-sm text-ink-500">KPIs and trends at a glance</p>
             </div>
 
             {/* KPI Tiles */}

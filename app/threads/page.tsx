@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useSearchParams } from "next/navigation"
 import { Sidebar } from "@/components/layout/sidebar"
 import { Header } from "@/components/layout/header"
 import { FiltersToolbar } from "@/components/threads/filters-toolbar"
@@ -76,15 +77,17 @@ export default function ThreadsPage() {
   const [filters, setFilters] = useState({
     type: "both",
     topics: [] as string[],
-    stance: "all",
-    confidence: 0.5,
   })
+  const searchParams = useSearchParams()
+  const query = (searchParams.get("q") ?? "").toLowerCase()
 
   const filteredThreads = sampleThreads.filter((thread) => {
     if (filters.type !== "both" && thread.type !== filters.type.toUpperCase()) return false
     if (filters.topics.length > 0 && !filters.topics.includes(thread.topic)) return false
-    if (filters.stance !== "all" && thread.stance?.toLowerCase() !== filters.stance) return false
-    if (thread.confidence < filters.confidence) return false
+    if (query) {
+      const haystack = `${thread.subject} ${thread.sender} ${thread.summary}`.toLowerCase()
+      if (!haystack.includes(query)) return false
+    }
     return true
   })
 
@@ -94,6 +97,10 @@ export default function ThreadsPage() {
       <div className="flex-1 flex flex-col" style={{ marginLeft: "var(--app-sidebar-width, 256px)" }}>
         <Header />
         <main className="mt-16 flex-1 overflow-auto">
+          <div className="px-6 pt-6">
+            <h1 className="text-xl font-semibold text-ink-900">Threads</h1>
+            <p className="text-sm text-ink-500">Browse and triage conversations</p>
+          </div>
           <FiltersToolbar onFiltersChange={setFilters} />
           <div className="px-6 py-6">
             <ThreadsTable threads={filteredThreads} onThreadClick={setSelectedThread} />
